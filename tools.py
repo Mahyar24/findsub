@@ -33,4 +33,6 @@ def rename_subs(results: dict[str, float], directory: str) -> None:
     """
     os.mkdir("Subs")
     for i, sub in enumerate(results.keys()):
-        os.rename(os.path.join(directory, sub), f"Subs/{i + 1}.srt")
+        new_name = f"Subs/{i + 1}.srt"
+        os.rename(os.path.join(directory, sub), new_name)
+        print(f"{new_name}: {results[sub]*100:.2f}%")

@@ -12,7 +12,7 @@ import multiprocessing
 import os
 from typing import Optional
 
-from clean import prepare_files
+from clean import iconv_subtitles, prepare_files
 from core import match_all
 from download import get_files
 from subtitles import extract_subtitle_times
@@ -25,6 +25,9 @@ def parsing_args() -> argparse.Namespace:
     Parsing the passed arguments, read help (-h, --help) for further information.
     """
     parser = argparse.ArgumentParser()
+    group_link_dir = (
+        parser.add_mutually_exclusive_group()
+    )  # Link or directory, not both!
 
     parser.add_argument(
         "file",
@@ -38,7 +41,16 @@ def parsing_args() -> argparse.Namespace:
         help="Desired language for subtitle.",
     )
 
-    parser.add_argument("-s", "--subscene", help="URL of subscene for the movie.")
+    group_link_dir.add_argument(
+        "-s", "--subscene", help="URL of subscene for the movie."
+    )
+
+    group_link_dir.add_argument(
+        "-d",
+        "--subtitles-directory",
+        type=os.path.abspath,  # type: ignore # Make it absolute path.
+        help="Check matching of subtitles in directory with movie.",
+    )
 
     parser.add_argument(
         "-a",
@@ -54,6 +66,7 @@ def main(
     language: str,
     audio: Optional[str] = None,
     subscene: Optional[str] = None,
+    subtitles_directory: Optional[str] = None,
 ) -> None:
     """
     Main entry point. It should not used within python code. Designed for CLI.
@@ -67,18 +80,22 @@ def main(
             )
             process.start()
             wait_for_audio = True
-    if subscene is None:
-        try:
-            _, directory = get_files(lang=language, file_name=file)
-        except ValueError as error:
-            raise RuntimeError(
-                "Cannot get subtitles, please use --subscene option."
-            ) from error
+    if subtitles_directory is None:
+        if subscene is None:
+            try:
+                _, directory = get_files(lang=language, file_name=file)
+            except ValueError as error:
+                raise RuntimeError(
+                    "Cannot get subtitles, please use --subscene option."
+                ) from error
+        else:
+            _, directory = get_files(
+                lang="farsi_persian", link=subscene
+            )  # TODO: language json.
+        prepare_files(directory)
     else:
-        _, directory = get_files(
-            lang="farsi_persian", link=subscene
-        )  # TODO: language json.
-    prepare_files(directory)
+        directory = subtitles_directory
+        iconv_subtitles(directory)
     sub_time_structures = extract_subtitle_times(directory)
     if wait_for_audio:
         process.join()
@@ -97,4 +114,5 @@ if __name__ == "__main__":
         language=args.language,
         audio=args.audio,
         subscene=args.subscene,
+        subtitles_directory=args.subtitles_directory,
     )

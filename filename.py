@@ -65,23 +65,23 @@ def clean_file_name(file_name: str) -> str:  # TODO: add support for series too!
     return " ".join(name)
 
 
-def imdb_search(name: str) -> str:
+def imdb_search(name: str) -> tuple[str, str]:
     """
     Based on a clean name, search in IMDB api for title. raise ValueError if nothing pop out.
     """
     result = IMDB.search_movie(name)
     if result:
         suggested_movie = result[0]
-        return suggested_movie.data["title"]
+        return suggested_movie.data["title"], suggested_movie.data["year"]
     raise ValueError(f"Bad name: {name!r}")
 
 
-def process(file_name: str) -> str:
+def process(file_name: str) -> tuple[str, str]:
     """
     Clean the name and search in IMDB, raise ValueError if something goes wrong.
     """
     name = clean_file_name(file_name)
     if name:
-        title = imdb_search(name)
-        return title
+        title, year = imdb_search(name)
+        return title, year
     raise ValueError("Cannot clean the name!")

@@ -4,7 +4,7 @@
 # Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 
 
-echo "$PWD";
+cd "${1}" || exit 1;
 
 for sub in *.srt; do
 	type=$(file -b "${sub}");

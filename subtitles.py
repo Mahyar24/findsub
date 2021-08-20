@@ -44,10 +44,11 @@ def extract_subtitle_times(
     tasks = {}
     with ProcessPoolExecutor() as executor:
         for subtitle in subtitles:
-            tasks[subtitle] = executor.submit(
-                extract_subtitle_time,
-                os.path.abspath(os.path.join(directory, subtitle)),
-            )
+            if subtitle.endswith('.srt'):
+                tasks[subtitle] = executor.submit(
+                    extract_subtitle_time,
+                    os.path.abspath(os.path.join(directory, subtitle)),
+                )
         wait(tasks.values(), return_when=ALL_COMPLETED)
 
     result = {}

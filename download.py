@@ -37,14 +37,16 @@ def suggest_link(file_name: str) -> tuple[str, str]:
     it will raise a ValueError.
     """
     try:
-        name = process(file_name)
+        name, year = process(file_name)
     except ValueError:
         print(f"Cannot get name of {file_name!r}")
         raise
     else:
-        return name, SUBSCENE_URL + "/subtitles/{}".format(
+        subscene_link = SUBSCENE_URL + "/subtitles/{}".format(
             name.replace(":", "").replace(" ", "-").lower()
         )
+        print(f"IMDB Search: {name!r} ({year}). Subscene link: {subscene_link!r}")
+        return name, subscene_link
 
 
 async def get_content(link: str) -> str:
@@ -140,7 +142,7 @@ async def async_main(name: str, link: str, lang: str) -> tuple[list[str], str]:
     Main async entry point. It will make a directory with movie title (hidden) and cd to it.
     download the files and return list of their filenames and directory path.
     """
-    directory = "." + name
+    directory = os.path.abspath("." + name)
     if not os.path.isdir(directory):
         os.mkdir(directory)
 
