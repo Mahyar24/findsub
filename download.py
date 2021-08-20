@@ -71,7 +71,7 @@ async def get_all_links(link: str, lang: str) -> list[str]:
         if rf"/{lang}/" in html_link["href"]:
             links.append(SUBSCENE_URL + html_link["href"])
     if not links:
-        raise ValueError(f"No subtitle with {lang!r} language found!")
+        raise NotImplementedError(f"No subtitle with {lang!r} language found!")
     return links
 
 

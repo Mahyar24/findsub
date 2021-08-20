@@ -35,4 +35,5 @@ def rename_subs(results: dict[str, float], directory: str) -> None:
     for i, sub in enumerate(results.keys()):
         new_name = f"Subs/{i + 1}.srt"
         os.rename(os.path.join(directory, sub), new_name)
-        print(f"{new_name}: {results[sub]*100:.2f}%")
+        if (per := results[sub] * 100) >= 0.0:
+            print(f"{new_name}: {per:.2f}%")

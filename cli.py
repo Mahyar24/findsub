@@ -79,6 +79,7 @@ def main(
                 target=extract_audio, args=(file,), daemon=True
             )
             process.start()
+            print("Audio extraction begins.")
             wait_for_audio = True
     if subtitles_directory is None:
         if subscene is None:
@@ -88,6 +89,8 @@ def main(
                 raise RuntimeError(
                     "Cannot get subtitles, please use --subscene option."
                 ) from error
+            except NotImplementedError:  # Subtitle with desired language didn't found.
+                raise
         else:
             _, directory = get_files(
                 lang="farsi_persian", link=subscene
@@ -99,10 +102,13 @@ def main(
     sub_time_structures = extract_subtitle_times(directory)
     if wait_for_audio:
         process.join()
+    print("Audio extraction ended.")
+    print("Matching Algorithm started.")
     movie_time_structure = make_base(audio)
     results = match_all(movie_time_structure, sub_time_structures)
     rename_subs(results, directory)
     clear(directory)
+    print("Done.")
 
 
 if __name__ == "__main__":
