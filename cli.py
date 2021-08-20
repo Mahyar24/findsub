@@ -114,7 +114,11 @@ def main(
 if __name__ == "__main__":
     args = parsing_args()
     assert os.path.isfile(args.file), f"Cannot find {args.file!r}"
-    os.chdir(os.path.dirname(args.file))  # CHANGE THE DIRECTORY.
+    try:
+        os.chdir(os.path.dirname(args.file))  # CHANGE THE DIRECTORY.
+    except FileNotFoundError:
+        pass  # Already at place.
+
     main(
         file=os.path.basename(args.file),
         language=args.language,
