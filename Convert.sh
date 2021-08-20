@@ -16,6 +16,9 @@ for sub in *.srt; do
 	elif [[ "$type" == "Little-endian UTF-16 Unicode text, with CRLF, CR line terminators" ]]; then
 	    iconv -f UTF-16 -t UTF-8 "${sub}" -o "${sub_name}_FIXED.srt";
 	    rm "${sub}";
+	elif [[ "$type" == "Big-endian UTF-16 Unicode text, with CRLF line terminators" ]]; then
+	    iconv -f UTF-16BE -t UTF-8 "${sub}" -o "${sub_name}_FIXED.srt";
+	    rm "${sub}";
 	else
 	    echo "${sub}" "is correct already!";
 	fi

@@ -24,9 +24,13 @@ def match(
     base_total = sum([(item[1] - item[0]).total_seconds() for item in base])
     for dialog in other:
         for speech in base:
-            if dialog[0] <= speech[0] and dialog[1] >= speech[1]:  # base is included in other completely
+            if (
+                dialog[0] <= speech[0] and dialog[1] >= speech[1]
+            ):  # base is included in other completely
                 matched += speech[1] - speech[0]
-            elif dialog[0] >= speech[0] and speech[1] >= dialog[1]:  # other is included in base completely
+            elif (
+                dialog[0] >= speech[0] and speech[1] >= dialog[1]
+            ):  # other is included in base completely
                 matched += dialog[1] - dialog[0]
             elif dialog[0] <= speech[0] <= dialog[1] <= speech[1]:  # partially
                 matched += dialog[1] - speech[0]

@@ -84,7 +84,7 @@ def iconv_subtitles(directory) -> None:
     subprocess.call(
         f"/home/mahyar/Works/ShittyStuff/SubFinder/Convert.sh {directory!r}",
         shell=True,
-        stdout=subprocess.DEVNULL,
+        # stdout=subprocess.DEVNULL,
     )
 
 
