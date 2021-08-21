@@ -1,7 +1,36 @@
 #! /usr/bin/python3.9
 
 """
-This package's goal is to .... TODO: complete this.
+This package's goal is to download all subtitles with a specific language
+of a movie from Subscene.com and then check every one of them to ranks them
+by synchronous.
+How? It will download subtitles and simultaneously extract audio of the file
+by using `FFMPEG`, after that we check when there is a possible human speech
+and make a timeline of it. Finally we check how much of a time when there is
+a possible speech each of the subtitles has a text.
+
+Required PyPI Packages:
+    `aiofiles` library is required. -> https://pypi.org/project/aiofiles/
+    `aiohttp` library is required. -> https://pypi.org/project/aiohttp/
+    `beautifulsoup4` library is required. -> https://pypi.org/project/beautifulsoup4/
+    `webrtcvad` library is required. -> https://pypi.org/project/webrtcvad/
+    `IMDbPY` library is required. -> https://pypi.org/project/IMDbPY/
+    `srt` library is required. -> https://pypi.org/project/srt/
+Required External Tools:
+    `ffmpeg` is required. -> https://www.ffmpeg.org/
+    And also Bash!
+
+Some of the functions here are copied from https://github.com/wiseman/py-webrtcvad.
+
+Usage:
+    subfinder <file>. -> makes a `Subs` folder and put ranked subtitles in it
+    subfinder <file> -a/--audio extracted_audio.wav -> same as last one but
+        using already extracted audio. (faster!)
+    subfinder -l/--language en/english <file> -> getting english subtitles.
+        default is "Farsi/Persian".
+    subfinder -s/--subscene <subscene-link> <file> -> no link suggestion. (faster!)
+    subfinder -d/--subtitles-directory <path-of-downloaded-subtitles> <file> ->
+        using already download subtitles.
 Compatible with python3.9+.
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
@@ -34,7 +63,7 @@ def parsing_args() -> argparse.Namespace:
         help="Select desired movie.",
     )
 
-    parser.add_argument(
+    parser.add_argument(  # TODO: add real language support.
         "-l",
         "--language",
         default="farsi_persian",
@@ -102,12 +131,11 @@ def main(
     sub_time_structures = extract_subtitle_times(directory)
     if wait_for_audio:
         process.join()
-    print("Audio extraction ended.")
     print("Matching Algorithm started.")
     movie_time_structure = make_base(audio)
     results = match_all(movie_time_structure, sub_time_structures)
     rename_subs(results, directory)
-    clear(directory)
+    clear(directory, audio)
     print("Done.")
 
 

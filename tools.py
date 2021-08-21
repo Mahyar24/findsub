@@ -17,21 +17,24 @@ def check_for_audio():
     return ".audio_completed.wav" in os.listdir()
 
 
-def clear(directory: str) -> None:
+def clear(directory: str, audio: str) -> None:
     """
     Remove the directory and audio file.
     """
     shutil.rmtree(
         directory
     )  # The directory should be empty but some cautious is not bad!
-    os.remove(".audio_completed.wav")
+    os.remove(audio)
 
 
 def rename_subs(results: dict[str, float], directory: str) -> None:
     """
     Make the Subs directory and rename subtitles based on coverage.
     """
-    os.mkdir("Subs")
+    try:
+        os.mkdir("Subs")
+    except FileExistsError:
+        pass
     for i, sub in enumerate(results.keys()):
         new_name = f"Subs/{i + 1}.srt"
         os.rename(os.path.join(directory, sub), new_name)
