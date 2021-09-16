@@ -17,7 +17,7 @@ def find_language(code):
 
     for key, value in langs.items():
         if code.lower() == key:
-            result = value["name"]
+            result = value["name"].split()[0]
             print(f'{code!r} -> {value["name"]!r}.')
             return result.lower()
 

@@ -7,8 +7,10 @@ Compatible with python3.9+.
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 
-from concurrent.futures import ALL_COMPLETED, ProcessPoolExecutor, wait
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from datetime import timedelta
+
+from tqdm import tqdm
 
 
 def match(
@@ -46,9 +48,15 @@ def match_all(
     """
     See match function docstring. matching concurrently and sorting the result.
     """
+    result = {}
     with ProcessPoolExecutor() as executor:
-        tasks = {k: executor.submit(match, movie_time, v) for k, v in sub_times.items()}
-        wait(tasks.values(), return_when=ALL_COMPLETED)
+        tasks = {executor.submit(match, movie_time, v): k for k, v in sub_times.items()}
+        for task in tqdm(
+            as_completed(tasks.keys()),
+            desc="Matching Subtitles",
+            total=len(sub_times),
+            bar_format="{desc}: {bar} {n_fmt}/{total_fmt} {percentage:3.0f}%",
+        ):
+            result[tasks[task]] = task.result()
 
-    result = {k: v.result() for k, v in tasks.items()}
     return dict(sorted(result.items(), key=lambda item: item[1], reverse=True))

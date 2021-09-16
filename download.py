@@ -17,6 +17,7 @@ from typing import Optional
 import aiofiles
 import aiohttp
 from bs4 import BeautifulSoup  # type: ignore
+from tqdm import tqdm
 
 from filename import process
 
@@ -119,7 +120,12 @@ async def download_all(
         asyncio.create_task(extract_dl_link(session, link)) for link in links
     ]
     downloading_files = []
-    for extract_coro in asyncio.as_completed(extracting_download_links):
+    for extract_coro in tqdm(
+        asyncio.as_completed(extracting_download_links),
+        desc="Downloading Subtitles",
+        total=len(links),
+        bar_format="{desc}: {bar} {n_fmt}/{total_fmt} {percentage:3.0f}%",
+    ):
         download_link = await extract_coro
         if download_link is not None:
             num += 1
