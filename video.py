@@ -12,6 +12,7 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 import contextlib
 import os
 import shutil
+import signal
 import subprocess
 import wave
 from datetime import timedelta
@@ -31,7 +32,13 @@ def extract_audio(movie: str) -> None:
         command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
     )
     if return_code:  # Error
-        raise RuntimeError("ffmpeg cannot extract audio!")
+        msg = "FFMPEG cannot extract audio! "
+        if ":" in movie:
+            msg += 'maybe because there is a ":" in filename!'
+        print(msg)
+        os.kill(
+            os.getppid(), signal.SIGTERM
+        )  # Hack. Killing program within child process.
     os.rename(".audio.wav", ".audio_completed.wav")
 
 

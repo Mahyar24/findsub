@@ -3,7 +3,6 @@
 # Converting srt files to UTF-8.
 # Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 
-
 cd "${1}" || exit 1;
 
 for sub in *.srt; do

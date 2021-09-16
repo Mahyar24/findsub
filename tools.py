@@ -8,6 +8,7 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 
 import os
 import shutil
+from typing import Optional
 
 
 def check_for_audio():
@@ -17,17 +18,18 @@ def check_for_audio():
     return ".audio_completed.wav" in os.listdir()
 
 
-def clear(directory: str, audio: str) -> None:
+def clear(directory: Optional[str], audio: str) -> None:
     """
     Remove the directory and audio file.
     """
-    shutil.rmtree(
-        directory
-    )  # The directory should be empty but some cautious is not bad!
+    if directory is not None:  #
+        shutil.rmtree(
+            directory
+        )  # The directory should be empty but some cautious is not bad!
     os.remove(audio)
 
 
-def rename_subs(results: dict[str, float], directory: str) -> None:
+def rename_subs(results: dict[str, float], directory: str, move: bool) -> None:
     """
     Make the Subs directory and rename subtitles based on coverage.
     """
@@ -37,6 +39,13 @@ def rename_subs(results: dict[str, float], directory: str) -> None:
         pass
     for i, sub in enumerate(results.keys()):
         new_name = f"Subs/{i + 1}.srt"
-        os.rename(os.path.join(directory, sub), new_name)
+        if move:
+            os.rename(os.path.join(directory, sub), new_name)
+        else:
+            try:
+                shutil.copy(os.path.join(directory, sub), new_name)
+            except shutil.SameFileError:
+                new_name = new_name.removesuffix(".srt") + "_SUBFINDER.srt"
+                shutil.copy(os.path.join(directory, sub), new_name)
         if (per := results[sub] * 100) >= 0.0:
             print(f"{new_name}: {per:.2f}%")
