@@ -40,7 +40,7 @@ import os
 from typing import Optional
 
 from clean import iconv_subtitles, prepare_files
-from cli import parsing_args
+from cli import find_language, parsing_args
 from core import match_all
 from download import get_files
 from subtitles import extract_subtitle_times
@@ -80,9 +80,7 @@ def main(
             except NotImplementedError:  # Subtitle with desired language didn't found.
                 raise
         else:
-            _, directory = get_files(
-                lang=language, link=subscene
-            )  # TODO: language json.
+            _, directory = get_files(lang=language, link=subscene)
         prepare_files(directory)
     else:
         directory = subtitles_directory
@@ -111,9 +109,11 @@ if __name__ == "__main__":
     except FileNotFoundError:
         pass  # Already at place.
 
+    lang = find_language(args.language)
+
     main(
         file=os.path.basename(args.file),
-        language=args.language,
+        language=lang,
         audio=args.audio,
         subscene=args.subscene,
         subtitles_directory=args.subtitles_directory,

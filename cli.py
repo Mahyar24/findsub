@@ -7,7 +7,21 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 
 import argparse
+import json
 import os
+
+
+def find_language(code):
+    with open("/home/mahyar/Works/ShittyStuff/SubFinder/langs.json") as langs_file:
+        langs = json.load(langs_file)
+
+    for key, value in langs.items():
+        if code.lower() == key:
+            result = value["name"]
+            print(f'{code!r} -> {value["name"]!r}.')
+            return result.lower()
+
+    raise ValueError(f"{code!r} not found!")
 
 
 def parsing_args() -> argparse.Namespace:
@@ -24,11 +38,11 @@ def parsing_args() -> argparse.Namespace:
         help="Select desired movie.",
     )
 
-    parser.add_argument(  # TODO: add real language support.
+    parser.add_argument(
         "-l",
         "--language",
-        default="farsi_persian",
-        help="Desired language for subtitle.",
+        default="fa",
+        help="Two letter code for desired subtitle's language. (ISO 639-1)",
     )
 
     group_link_dir.add_argument(
