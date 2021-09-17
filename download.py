@@ -17,7 +17,7 @@ from typing import Optional
 import aiofiles
 import aiohttp
 from bs4 import BeautifulSoup  # type: ignore
-from tqdm import tqdm
+from tqdm import tqdm  # type: ignore
 
 from filename import process
 
@@ -148,7 +148,7 @@ async def async_main(name: str, link: str, lang: str) -> tuple[list[str], str]:
     Main async entry point. It will make a directory with movie title (hidden) and cd to it.
     download the files and return list of their filenames and directory path.
     """
-    directory = os.path.abspath("." + name)
+    directory = os.path.abspath("." + name.replace(":", " "))
     if not os.path.isdir(directory):
         os.mkdir(directory)
 

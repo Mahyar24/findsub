@@ -6,6 +6,7 @@ Compatible with python3.9+.
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 
+import math
 import os
 import shutil
 from typing import Optional
@@ -29,6 +30,10 @@ def clear(directory: Optional[str], audio: str) -> None:
     os.remove(audio)
 
 
+def find_zero_pad_number(x: int) -> int:
+    return int(math.log10(x)) + 1
+
+
 def rename_subs(results: dict[str, float], directory: str, move: bool) -> None:
     """
     Make the Subs directory and rename subtitles based on coverage.
@@ -37,8 +42,11 @@ def rename_subs(results: dict[str, float], directory: str, move: bool) -> None:
         os.mkdir("Subs")
     except FileExistsError:
         pass
+
+    zero_pad_num = find_zero_pad_number(len(results))
+
     for i, sub in enumerate(results.keys()):
-        new_name = f"Subs/{i + 1}.srt"
+        new_name = "Subs/" + f"{i + 1}".zfill(zero_pad_num) + ".srt"
         if move:
             os.rename(os.path.join(directory, sub), new_name)
         else:
@@ -47,5 +55,5 @@ def rename_subs(results: dict[str, float], directory: str, move: bool) -> None:
             except shutil.SameFileError:
                 new_name = new_name.removesuffix(".srt") + "_SUBFINDER.srt"
                 shutil.copy(os.path.join(directory, sub), new_name)
-        if (per := results[sub] * 100) >= 0.0:
-            print(f"{new_name}: {per:.2f}%")
+        if results[sub] >= 0.0:
+            print(f"{new_name}: {results[sub]:.2%}")

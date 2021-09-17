@@ -88,8 +88,9 @@ def main(
 
     sub_time_structures = extract_subtitle_times(directory)
     if wait_for_audio:
+        print("Waiting for audio extraction to finish.")
         process.join()
-    print("Matching Algorithm started.")
+        print("Audio Extraction finished.")
     movie_time_structure = make_base(audio)
     results = match_all(movie_time_structure, sub_time_structures)
     rename_subs(
@@ -109,7 +110,10 @@ if __name__ == "__main__":
     except FileNotFoundError:
         pass  # Already at place.
 
-    lang = find_language(args.language)
+    if args.subtitles_directory is None:
+        lang = find_language(args.language)
+    else:
+        lang = ""
 
     main(
         file=os.path.basename(args.file),
