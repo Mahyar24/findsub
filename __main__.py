@@ -95,10 +95,12 @@ def main(
     results = match_all(movie_time_structure, sub_time_structures)
     rename_subs(
         results, directory, move=subtitles_directory is None
-    )  # If subtitle_directory is present then we just copy files and remain the original subtitle folder intact.
+    )  # If subtitle_directory is present then we just copy files
+    # and remain the original subtitle folder intact.
     clear(
         directory if subtitles_directory is None else None, audio
-    )  # First parameter assure that we don't accidentally delete already existed subtitle directory.
+    )  # First parameter assure that we don't accidentally delete
+    # already existed subtitle directory.
     print("Done.")
 
 

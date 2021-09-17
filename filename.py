@@ -40,7 +40,7 @@ def find_year(name: list[str]) -> str:
     return ""
 
 
-def clean_file_name(file_name: str) -> str:  # TODO: add support for series too!
+def clean_file_name(file_name: str) -> str:
     """
     We have an assumption that file names are in this kind of patterns:
         'Borat.Subsequent.Moviefilm.2020.1080p.WEB-DL.RARBG.DigiMoviez.mkv'

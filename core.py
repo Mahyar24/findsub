@@ -16,7 +16,7 @@ from tqdm import tqdm  # type: ignore
 def match(
     base: list[tuple[timedelta, timedelta]],
     other: list[tuple[timedelta, timedelta]],
-) -> float:  # TODO: optimize algorithm mathematically and then Cython instead for speed.
+) -> float:  # TODO: use Cython instead for speed.
     """
     Based on the data structure, calculate that how much of the time that there is
     some speech going on in base, there is a subtitle in other.
@@ -25,6 +25,8 @@ def match(
     base_total = sum([(item[1] - item[0]).total_seconds() for item in base])
     for dialog in other:
         for speech in base:
+            if speech[0] > dialog[1] or dialog[0] > speech[1]:  # Huge SpeedUP.
+                continue
             if (
                 dialog[0] <= speech[0] and dialog[1] >= speech[1]
             ):  # base is included in other completely

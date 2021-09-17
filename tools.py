@@ -30,8 +30,11 @@ def clear(directory: Optional[str], audio: str) -> None:
     os.remove(audio)
 
 
-def find_zero_pad_number(x: int) -> int:
-    return int(math.log10(x)) + 1
+def find_zero_pad_number(length_of_subtitles: int) -> int:
+    """
+    Finding needed length of zeros. 123 files -> 1: 001; so it need two leading zero.
+    """
+    return int(math.log10(length_of_subtitles)) + 1
 
 
 def rename_subs(results: dict[str, float], directory: str, move: bool) -> None:

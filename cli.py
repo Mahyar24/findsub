@@ -12,7 +12,13 @@ import os
 
 
 def find_language(code):
-    with open("/home/mahyar/Works/ShittyStuff/SubFinder/langs.json") as langs_file:
+    """
+    Reading langs.json and trying to find desired language
+    by checking two letter codes base on ISO 639-1.
+    """
+    with open(
+        "/home/mahyar/Works/ShittyStuff/SubFinder/langs.json", encoding="utf-8"
+    ) as langs_file:
         langs = json.load(langs_file)
 
     for key, value in langs.items():
