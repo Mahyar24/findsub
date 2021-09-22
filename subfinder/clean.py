@@ -75,14 +75,14 @@ def unzip_all_and_hash(zip_files: list[str]) -> list[str]:
     return [result for task in tasks if (result := task.result()) is not None]
 
 
-def iconv_subtitles(directory) -> None:
+def iconv_subtitles(directory: str) -> None:
     """
     Converting non UTF-8 srt files to UTF-8. Based on `Convert.sh`.
     Because we are in subtitle directory, we must run shell script
     with leading two dots. (../Sample.sh)
     """
     subprocess.call(
-        f"/home/mahyar/Works/ShittyStuff/SubFinder/Convert.sh {directory!r}",
+        f"/home/mahyar/Works/ShittyStuff/SubFinder/subfinder/Convert.sh {directory!r}",
         shell=True,
         stdout=subprocess.DEVNULL,
     )

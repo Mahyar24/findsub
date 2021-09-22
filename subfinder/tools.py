@@ -12,7 +12,7 @@ import shutil
 from typing import Optional
 
 
-def check_for_audio():
+def check_for_audio() -> bool:
     """
     See if completed audio is present.
     """
@@ -45,7 +45,6 @@ def rename_subs(results: dict[str, float], directory: str, move: bool) -> None:
         os.mkdir("Subs")
     except FileExistsError:
         pass
-
     zero_pad_num = find_zero_pad_number(len(results))
 
     for i, sub in enumerate(results.keys()):

@@ -27,6 +27,7 @@ def match(
         for speech in base:
             if speech[0] > dialog[1] or dialog[0] > speech[1]:  # Huge SpeedUP.
                 continue
+
             if (
                 dialog[0] <= speech[0] and dialog[1] >= speech[1]
             ):  # base is included in other completely
@@ -60,5 +61,4 @@ def match_all(
             bar_format="{desc}: {bar} {n_fmt}/{total_fmt} {percentage:3.0f}%",
         ):
             result[tasks[task]] = task.result()
-
     return dict(sorted(result.items(), key=lambda item: item[1], reverse=True))

@@ -57,4 +57,7 @@ def extract_subtitle_times(
         if val := value.result():
             result[key] = val
 
-    return result
+    if result:
+        return result
+    else:
+        raise UnicodeError("Cannot read any of the subtitles.")

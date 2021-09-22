@@ -86,9 +86,18 @@ def main(
         directory = subtitles_directory
         iconv_subtitles(directory)
 
-    sub_time_structures = extract_subtitle_times(directory)
+    try:
+        sub_time_structures = extract_subtitle_times(directory)
+    except UnicodeError:
+        clear(
+            directory if subtitles_directory is None else None, audio
+        )  # First parameter assure that we don't accidentally delete
+        # already existed subtitle directory.
+        raise
+
     if wait_for_audio:
         print("Waiting for audio extraction to finish.")
+        # noinspection PyUnboundLocalVariable
         process.join()
         print("Audio Extraction finished.")
     movie_time_structure = make_base(audio)
@@ -97,10 +106,7 @@ def main(
         results, directory, move=subtitles_directory is None
     )  # If subtitle_directory is present then we just copy files
     # and remain the original subtitle folder intact.
-    clear(
-        directory if subtitles_directory is None else None, audio
-    )  # First parameter assure that we don't accidentally delete
-    # already existed subtitle directory.
+    clear(directory if subtitles_directory is None else None, audio)
     print("Done.")
 
 

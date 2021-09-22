@@ -11,7 +11,7 @@ import json
 import os
 
 
-def find_language(code):
+def find_language(code: str) -> str:
     """
     Reading langs.json and trying to find desired language
     by checking two letter codes base on ISO 639-1.
