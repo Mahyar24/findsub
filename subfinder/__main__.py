@@ -60,6 +60,7 @@ def main(
     """
     wait_for_audio = False
     if audio is None:
+        clear_audio = True
         audio = ".audio_completed.wav"
         if not check_for_audio():
             wait_for_audio = True
@@ -68,6 +69,8 @@ def main(
             )
             process.start()
             print("Audio extraction begins.")
+    else:
+        clear_audio = False  # We shouldn't remove user's audio.
 
     if subtitles_directory is None:
         if subscene is None:
@@ -90,7 +93,8 @@ def main(
         sub_time_structures = extract_subtitle_times(directory)
     except UnicodeError:
         clear(
-            directory if subtitles_directory is None else None, audio
+            directory if subtitles_directory is None else None,
+            audio if clear_audio else "",
         )  # First parameter assure that we don't accidentally delete
         # already existed subtitle directory.
         raise
@@ -106,7 +110,9 @@ def main(
         results, directory, move=subtitles_directory is None
     )  # If subtitle_directory is present then we just copy files
     # and remain the original subtitle folder intact.
-    clear(directory if subtitles_directory is None else None, audio)
+    clear(
+        directory if subtitles_directory is None else None, audio if clear_audio else ""
+    )
     print("Done.")
 
 

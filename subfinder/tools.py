@@ -27,7 +27,9 @@ def clear(directory: Optional[str], audio: str) -> None:
         shutil.rmtree(
             directory
         )  # The directory should be empty but some cautious is not bad!
-    os.remove(audio)
+
+    if audio:
+        os.remove(audio)
 
 
 def find_zero_pad_number(length_of_subtitles: int) -> int:
