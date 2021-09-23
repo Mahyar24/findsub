@@ -48,7 +48,7 @@ from tools import check_for_audio, clear, rename_subs
 from video import extract_audio, make_base
 
 
-def main(
+def main(  # TODO: break main function into more compact functions.
     file: str,
     language: str,
     audio: Optional[str] = None,

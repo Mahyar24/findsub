@@ -9,6 +9,7 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 import argparse
 import json
 import os
+import textwrap
 
 
 def find_language(code: str) -> str:
@@ -34,7 +35,15 @@ def parsing_args() -> argparse.Namespace:
     """
     Parsing the passed arguments, read help (-h, --help) for further information.
     """
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        epilog=textwrap.dedent(
+            """
+            Written by: Mahyar Mahdavi <Mahyar@Mahyar24.com>.
+            Source Code: <https://github.com/mahyar24/subfinder>.
+            Reporting Bugs and PRs are welcomed. :)
+            """
+        )
+    )
     group_link_dir = (
         parser.add_mutually_exclusive_group()
     )  # Link or directory, not both!
