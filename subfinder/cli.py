@@ -77,4 +77,12 @@ def parsing_args() -> argparse.Namespace:
         help="If extracted audio is available, use the path to speed up program.",
     )
 
+    parser.add_argument(
+        "-g",
+        "--gpu-acceleration",
+        help="Using GPU acceleration for extracting audio. "
+        "(Nvidia supported only, CUDA must be installed too.)",
+        action="store_true",
+    )
+
     return parser.parse_args()

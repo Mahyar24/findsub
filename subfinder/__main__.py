@@ -17,7 +17,7 @@ Required PyPI Packages:
     `IMDbPY` library is required. -> https://pypi.org/project/IMDbPY/
     `srt` library is required. -> https://pypi.org/project/srt/
 Required External Tools:
-    `ffmpeg` is required. -> https://www.ffmpeg.org/
+    `FFmpeg` is required. -> https://www.ffmpeg.org/
     And also Bash!
 
 Some of the functions here are copied from https://github.com/wiseman/py-webrtcvad.
@@ -54,6 +54,7 @@ def main(  # TODO: break main function into more compact functions.
     audio: Optional[str] = None,
     subscene: Optional[str] = None,
     subtitles_directory: Optional[str] = None,
+    gpu_acceleration: bool = False,
 ) -> None:
     """
     Main entry point. It should not used within python code. Designed for CLI.
@@ -65,7 +66,7 @@ def main(  # TODO: break main function into more compact functions.
         if not check_for_audio():
             wait_for_audio = True
             process = multiprocessing.Process(
-                target=extract_audio, args=(file,), daemon=True
+                target=extract_audio, args=(file, gpu_acceleration), daemon=True
             )
             process.start()
             print("Audio extraction begins.")
@@ -135,4 +136,5 @@ if __name__ == "__main__":
         audio=args.audio,
         subscene=args.subscene,
         subtitles_directory=args.subtitles_directory,
+        gpu_acceleration=args.gpu_acceleration,
     )

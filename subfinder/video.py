@@ -4,7 +4,7 @@
 This module's goal is to make a data structure of when there is a human speech in the movie.
 Compatible with python3.9+.
 `webrtcvad` library is required. -> https://pypi.org/project/webrtcvad/
-`ffmpeg` is required. -> https://www.ffmpeg.org/
+`FFmpeg` is required. -> https://www.ffmpeg.org/
 Some of the functions here are copied from https://github.com/wiseman/py-webrtcvad. (MIT License)
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
@@ -21,20 +21,25 @@ from typing import Iterator
 import webrtcvad  # type: ignore
 
 
-def extract_audio(movie: str) -> None:
+def extract_audio(movie: str, gpu_acceleration: bool = False) -> None:
     """
-    Extracting audio of the movie with help of `ffmpeg`.
+    Extracting audio of the movie with help of `FFmpeg`.
     16-bit. Mono. 32,000 Hz. Wav.
     """
-    assert shutil.which("ffmpeg") is not None, "Cannot find ffmpeg."
-    command = f"ffmpeg -y -i {movie!r} -ar 32000 -acodec pcm_s16le -ac 1 '.audio.wav'"
+    assert shutil.which("ffmpeg") is not None, "Cannot find FFmpeg."
+    cuda = "-hwaccel cuda" if gpu_acceleration else ""
+    command = (
+        f"ffmpeg -y -i {movie!r} {cuda} -ar 32000 -acodec pcm_s16le -ac 1 '.audio.wav'"
+    )
     return_code = subprocess.call(
         command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
     )
     if return_code:  # Error
-        msg = "FFMPEG cannot extract audio! "
+        msg = "FFmpeg cannot extract audio! "
         if ":" in movie:
             msg += 'maybe because there is a ":" in filename!'
+        elif gpu_acceleration:
+            msg += "maybe because FFmpeg is not compiled with cuda support!"
         print(msg)
         os.kill(
             os.getppid(), signal.SIGTERM

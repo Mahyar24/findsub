@@ -59,5 +59,4 @@ def extract_subtitle_times(
 
     if result:
         return result
-    else:
-        raise UnicodeError("Cannot read any of the subtitles.")
+    raise UnicodeError("Cannot read any of the subtitles.")
