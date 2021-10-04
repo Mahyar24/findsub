@@ -18,7 +18,7 @@ def find_language(code: str) -> str:
     by checking two letter codes base on ISO 639-1.
     """
     with open(
-        "/home/mahyar/Works/ShittyStuff/SubFinder/langs.json", encoding="utf-8"
+        "/home/mahyar/Works/PycharmProjects/SubFinder/langs.json", encoding="utf-8"
     ) as langs_file:
         langs = json.load(langs_file)
 

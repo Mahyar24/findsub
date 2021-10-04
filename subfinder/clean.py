@@ -82,7 +82,7 @@ def iconv_subtitles(directory: str) -> None:
     with leading two dots. (../Sample.sh)
     """
     subprocess.call(
-        f"/home/mahyar/Works/ShittyStuff/SubFinder/subfinder/Convert.sh {directory!r}",
+        f"/home/mahyar/Works/PycharmProjects/SubFinder/subfinder/Convert.sh {directory!r}",
         shell=True,
         stdout=subprocess.DEVNULL,
     )

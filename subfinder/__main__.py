@@ -18,6 +18,7 @@ Required PyPI Packages:
     `srt` library is required. -> https://pypi.org/project/srt/
 Required External Tools:
     `FFmpeg` is required. -> https://www.ffmpeg.org/
+    `FFprobe` is required. -> https://ffmpeg.org/ffprobe.html
     And also Bash!
 
 Some of the functions here are copied from https://github.com/wiseman/py-webrtcvad.
@@ -41,7 +42,7 @@ from typing import Optional
 
 from clean import iconv_subtitles, prepare_files
 from cli import find_language, parsing_args
-from core import match_all
+from pycore import match_all
 from download import get_files
 from subtitles import extract_subtitle_times
 from tools import check_for_audio, clear, rename_subs
