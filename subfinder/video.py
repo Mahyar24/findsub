@@ -68,9 +68,9 @@ def extract_audio(movie: str, gpu_acceleration: bool = False) -> None:
     assert shutil.which("ffmpeg") is not None, "Cannot find FFmpeg."
     cuda = "-hwaccel cuda" if gpu_acceleration else ""
     if rate := suggest_sample_rate(movie):
-        command = f"ffmpeg -y -i {movie!r} {cuda} -ar {rate} -acodec pcm_s16le -ac 1 '.audio.wav'"
+        command = f"ffmpeg -y -i {movie!r} -map a:0 {cuda} -ar {rate} -acodec pcm_s16le -ac 1 '.audio.wav'"
     else:
-        command = f"ffmpeg -y -i {movie!r} {cuda} -acodec pcm_s16le -ac 1 '.audio.wav'"
+        command = f"ffmpeg -y -i {movie!r} -map a:0 {cuda} -acodec pcm_s16le -ac 1 '.audio.wav'"
     return_code = subprocess.call(
         command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
     )
@@ -105,7 +105,16 @@ def read_wave(file: str) -> tuple[bytes, int]:
     Reading wav file, asserting qualities, returning data.
     """
     with contextlib.closing(wave.open(file, "rb")) as wav_file:
+        num_channels = wav_file.getnchannels()
+        assert (
+            num_channels == 1
+        ), f"Number of Channels must be one, not {num_channels!r}."
+        sample_width = wav_file.getsampwidth()
+        assert sample_width == 2, f"Width must be two, not {sample_width!r}."
         sample_rate = wav_file.getframerate()
+        assert (
+            sample_rate in RATES
+        ), f"Sample Rate must be in {RATES}, not {sample_rate!r}."
         pcm_data = wav_file.readframes(
             wav_file.getnframes()
         )  # TODO: don't loading all data in memory.

@@ -36,14 +36,16 @@ Compatible with python3.9+.
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 
+import cProfile
 import multiprocessing
 import os
+import textwrap
 from typing import Optional
 
 from clean import iconv_subtitles, prepare_files
 from cli import find_language, parsing_args
-from pycore import match_all
 from download import get_files
+from pycore import match_all
 from subtitles import extract_subtitle_times
 from tools import check_for_audio, clear, rename_subs
 from video import extract_audio, make_base
@@ -131,11 +133,16 @@ if __name__ == "__main__":
     else:
         lang = ""
 
+    cProfile.run(
+        textwrap.dedent(
+    """
     main(
         file=os.path.basename(args.file),
         language=lang,
         audio=args.audio,
         subscene=args.subscene,
         subtitles_directory=args.subtitles_directory,
-        gpu_acceleration=args.gpu_acceleration,
-    )
+        gpu_acceleration=args.gpu_acceleration)
+    """
+        )
+    , '/home/mahyar/stat.prof')
