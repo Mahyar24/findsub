@@ -191,7 +191,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 name = "cython"
 version = "0.29.25"
 description = "The Cython compiler for writing C extensions for the Python language."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
@@ -497,7 +497,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "398c2de340f59435ba48cc761e9a81b65da64dd0c934e050ec4c753198704f29"
+content-hash = "bedafe0d250082498fb261095415e4d7dae492d697ddc288d3686e5a78d61cb7"
 
 [metadata.files]
 aiodns = [

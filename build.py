@@ -8,13 +8,17 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 from distutils.command.build_ext import build_ext
 from distutils.core import Extension
 
-ext_modules = [
-    Extension(
-        name="algo",
-        include_dirs=["findsub/core"],
-        sources=["<source-file-0>", "<source-file-1>"],
-    ),
-]
+from Cython.Build import cythonize  # type: ignore
+
+ext_modules = cythonize(
+    [
+        Extension(
+            name="algo",
+            include_dirs=["findsub/core"],
+            sources=["findsub/core/algo.pyx"],
+        ),
+    ]
+)
 
 
 class BuildFailed(Exception):
@@ -24,13 +28,13 @@ class BuildFailed(Exception):
 class ExtBuilder(build_ext):
     def run(self):
         try:
-            build_ext.run(self)
+            super().run()
         except (DistutilsPlatformError, FileNotFoundError):
-            raise BuildFailed("File not found. Could not compile C extension.")
+            raise BuildFailed("File not found. Could not compile Cython extensions.")
 
     def build_extension(self, ext):
         try:
-            build_ext.build_extension(self, ext)
+            super().build_extension(ext)
         except (CCompilerError, DistutilsExecError, DistutilsPlatformError, ValueError):
             raise BuildFailed("Could not compile C extension.")
 
