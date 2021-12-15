@@ -10,8 +10,9 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from datetime import timedelta
 
-from core import match
 from tqdm import tqdm  # type: ignore
+
+from .core import match
 
 
 def match_all(

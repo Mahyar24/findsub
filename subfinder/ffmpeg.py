@@ -4,12 +4,13 @@
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 
-
 import bisect
 import shutil
 import subprocess
 from pathlib import Path
 from typing import Literal, Union
+
+from .movie import Movie
 
 RATES = (8_000, 16_000, 32_000, 48_000)
 
@@ -28,7 +29,7 @@ def find_sample_rate(rate: int) -> int:
     return RATES[index - 1]
 
 
-def suggest_sample_rate(movie: Path) -> Union[int, Literal[False]]:
+def suggest_sample_rate(movie: Movie) -> Union[int, Literal[False]]:
     """
     If sample_rate was in (8000, 16000, 32000, 48000)Hz,
     we return a False and doesn't resample the rate; otherwise
@@ -38,7 +39,7 @@ def suggest_sample_rate(movie: Path) -> Union[int, Literal[False]]:
 
     command = (
         f"ffprobe -hide_banner -select_streams a:0 -show_entries"
-        f" stream=sample_rate -of default=noprint_wrappers=1:nokey=1 '{movie}'"
+        f" stream=sample_rate -of default=noprint_wrappers=1:nokey=1 '{movie.path}'"
     )
 
     try:
@@ -55,26 +56,32 @@ def suggest_sample_rate(movie: Path) -> Union[int, Literal[False]]:
         return find_sample_rate(rate)
 
 
-def extract_audio(movie: Path, cached_audio: Path) -> None:
+def extract_audio(movie: Movie, cached_audio: Path) -> None:
     """
     Extracting audio of the movie with help of `FFmpeg`.
     16-bit. Mono. 32,000 Hz. Wav.
     """
+
+    destination = movie.dir / ".audio.wav"
+
     assert shutil.which("ffmpeg") is not None, "Cannot find FFmpeg."
     if rate := suggest_sample_rate(movie):
-        command = f"ffmpeg -y -i '{movie}' -map a:0 -ar {rate} -acodec pcm_s16le -ac 1 '.audio.wav'"
-    else:
         command = (
-            f"ffmpeg -y -i '{movie}' -map a:0 -acodec pcm_s16le -ac 1 '.audio.wav'"
+            f"ffmpeg -y -i '{movie.path}' -map a:0 -ar {rate} -acodec pcm_s16le"
+            f" -ac 1 '{destination}'"
         )
+    else:
+        command = f"ffmpeg -y -i '{movie.path}' -map a:0 -acodec pcm_s16le -ac 1 '{destination}'"
+
     return_code = subprocess.call(
         command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
     )
+
     if return_code:  # Error
         msg = "FFmpeg cannot extract audio! "
-        if ":" in str(movie):
+        if ":" in str(movie.path):
             msg += 'maybe because there is a ":" in filename!'
 
         raise FFmpegError(msg)
 
-    Path(".audio.wav").rename(cached_audio)
+    destination.rename(cached_audio)

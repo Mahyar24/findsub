@@ -44,7 +44,7 @@ def unzip_remove(zip_file: Path) -> Optional[Path]:
     the zip file and return None, else, delete non-srt files and change
     the name of subtitles to their md5 hash hexdigest.
     """
-    directory = zip_file.parent / zip_file.name.split(".")[0]
+    directory = zip_file.parent / zip_file.stem
     try:
         with zipfile.ZipFile(zip_file, "r") as file:
             # Must extract every zip file to one directory otherwise maybe some

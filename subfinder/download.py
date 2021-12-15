@@ -19,8 +19,9 @@ from typing import Optional
 import aiofiles
 import aiohttp
 from bs4 import BeautifulSoup  # type: ignore
-from movie import Movie
 from tqdm import tqdm  # type: ignore
+
+from .movie import Movie
 
 
 class Downloader:
@@ -154,7 +155,7 @@ class Downloader:
         Main async entry point. It will make a directory with movie title (hidden) and cd to it.
         download the files and return list of their filenames and directory path.
         """
-        directory = Path(".").absolute()
+        directory = self.movie.dir
         directory /= f".{self.movie.filename_hash}"
 
         if directory.is_dir():

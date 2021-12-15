@@ -15,7 +15,8 @@ import wave
 from pathlib import Path
 
 import webrtcvad  # type: ignore
-from ffmpeg import RATES
+
+from .ffmpeg import RATES
 
 
 def generate_chunk(file: Path, frame_duration_ms: int, sample_rate: int) -> list[bool]:

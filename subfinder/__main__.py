@@ -42,15 +42,15 @@ import multiprocessing
 from pathlib import Path
 from typing import Optional
 
-from clean import iconv_subtitles, prepare_files
-from cli import parsing_args
-from download import Downloader
-from ffmpeg import FFmpegError, extract_audio
-from movie import Movie
-from pycore import match_all
-from pyvideo import make_base
-from subtitles import extract_subtitle_times
-from tools import clear, make_subs_dir
+from .clean import iconv_subtitles, prepare_files
+from .cli import parsing_args
+from .download import Downloader
+from .ffmpeg import extract_audio
+from .movie import Movie
+from .pycore import match_all
+from .pyvideo import make_base
+from .subtitles import extract_subtitle_times
+from .tools import clear, make_subs_dir
 
 
 def main(
@@ -74,7 +74,7 @@ def main(
 
     if audio is None:
         process = multiprocessing.Process(
-            target=extract_audio, args=(file, cached_audio), daemon=True
+            target=extract_audio, args=(movie, cached_audio), daemon=True
         )
         process.start()
         print("Audio extraction begins.")

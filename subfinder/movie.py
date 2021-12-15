@@ -23,7 +23,7 @@ class Movie:
     """
 
     def __init__(self, file: pathlib.Path) -> None:
-        self.path = file
+        self.path = file.absolute()
         self.filename = self.path.name
         self.filename_only = self.path.stem
         self.mime = self.path.suffix
