@@ -3,6 +3,7 @@
 """
 This module's goal is to calculate mutual percentage of time between two data structure
 based on `subtitle.py` module. It will show how much they are potentially synchronous.
+`tqdm` library is required. -> https://pypi.org/project/tqdm/
 Compatible with python3.9+.
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """

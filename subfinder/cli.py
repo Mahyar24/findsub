@@ -41,7 +41,8 @@ def parsing_args() -> argparse.Namespace:
         epilog=textwrap.dedent(
             """
             Written by: Mahyar Mahdavi <Mahyar@Mahyar24.com>.
-            Source Code: <https://github.com/mahyar24/subfinder>.
+            Source Code: <https://github.com/mahyar24/findsub>.
+            PyPI: <https://pypi.org/project/findsub/>
             Reporting Bugs and PRs are welcomed. :)
             """
         )

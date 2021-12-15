@@ -1,6 +1,10 @@
 #! /usr/bin/python3.9
 
 """
+This module's goal is to extract audio of the movie in a way that satisfy the
+technical requirements of `webrtcvad`.
+`FFmpeg` is required. -> https://www.ffmpeg.org/
+`FFprobe` is required. -> https://ffmpeg.org/ffprobe.html
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 

@@ -1,7 +1,7 @@
 #! /usr/bin/python3.9
 
 """
-Some tiny functions to use in `cli.py`.
+Some tiny functions to use in `__main__.py`.
 Compatible with python3.9+.
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """

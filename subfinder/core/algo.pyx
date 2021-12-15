@@ -4,6 +4,7 @@
 # cython: cdivision=True
 
 """
+Compatible with python3.9+ and Cython0.29.25+.
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 

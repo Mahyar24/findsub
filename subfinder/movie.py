@@ -6,6 +6,7 @@ official title of movie.
 Compatible with python3.9+.
 `IMDbPY` library is required. -> https://pypi.org/project/IMDbPY/
 In case of failure, it will raise a ValueError.
+Compatible with python3.9+.
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 

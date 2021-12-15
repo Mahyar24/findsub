@@ -7,6 +7,8 @@ Compatible with python3.9+.
 `aiofiles` library is required. -> https://pypi.org/project/aiofiles/
 `aiohttp` library is required. -> https://pypi.org/project/aiohttp/
 `beautifulsoup4` library is required. -> https://pypi.org/project/beautifulsoup4/
+`lxml` library is required. -> https://pypi.org/project/lxml/
+`tqdm` library is required. -> https://pypi.org/project/tqdm/
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 

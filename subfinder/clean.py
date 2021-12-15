@@ -5,6 +5,9 @@ This module's goal is to unzip, removes duplicate and convert subtitles to
 UTF-8 and remove unnecessary junks.
 Compatible with python3.9+. No third-party library is required, but having a dependency for
 `Convert.sh` and `iconv` command underneath.
+`iconv` is required. -> https://www.gnu.org/software/libiconv/
+also Bash is in need!
+Compatible with python3.9+.
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 

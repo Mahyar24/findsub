@@ -13,6 +13,7 @@ Required PyPI Packages:
     `aiofiles` library is required. -> https://pypi.org/project/aiofiles/
     `aiohttp` library is required. -> https://pypi.org/project/aiohttp/
     `beautifulsoup4` library is required. -> https://pypi.org/project/beautifulsoup4/
+    `lxml` library is required. -> https://pypi.org/project/lxml/
     `webrtcvad` library is required. -> https://pypi.org/project/webrtcvad/
     `IMDbPY` library is required. -> https://pypi.org/project/IMDbPY/
     `srt` library is required. -> https://pypi.org/project/srt/
@@ -21,18 +22,19 @@ Required PyPI Packages:
 Required External Tools:
     `FFmpeg` is required. -> https://www.ffmpeg.org/
     `FFprobe` is required. -> https://ffmpeg.org/ffprobe.html
+    `iconv` is required. -> https://www.gnu.org/software/libiconv/
     And also Bash!
 
 Some functions here are copied from https://github.com/wiseman/py-webrtcvad.
 
 Usage:
-    subfinder <file>. -> makes a `Subs` folder and put ranked subtitles in it
-    subfinder <file> -a/--audio extracted_audio.wav -> same as last one but
+    findsub <file>. -> makes a `Subs` folder and put ranked subtitles in it
+    findsub <file> -a/--audio extracted_audio.wav -> same as last one but
         using already extracted audio. (faster!)
-    subfinder -l/--language en/english <file> -> getting english subtitles.
+    findsub -l/--language en/english <file> -> getting english subtitles.
         default is "Farsi/Persian".
-    subfinder -s/--subscene <subscene-link> <file> -> no link suggestion. (faster!)
-    subfinder -d/--subtitles-directory <path-of-downloaded-subtitles> <file> ->
+    findsub -s/--subscene <subscene-link> <file> -> no link suggestion. (faster!)
+    findsub -d/--subtitles-directory <path-of-downloaded-subtitles> <file> ->
         using already download subtitles.
 Compatible with python3.9+.
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.

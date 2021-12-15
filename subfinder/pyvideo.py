@@ -2,11 +2,11 @@
 
 """
 This module's goal is to make a data structure of when there is a human speech in the movie.
-Compatible with python3.9+.
 `webrtcvad` library is required. -> https://pypi.org/project/webrtcvad/
 `FFmpeg` is required. -> https://www.ffmpeg.org/
 `FFprobe` is required. -> https://ffmpeg.org/ffprobe.html
 Some functions here are copied from https://github.com/wiseman/py-webrtcvad. (MIT License)
+Compatible with python3.9+.
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 
