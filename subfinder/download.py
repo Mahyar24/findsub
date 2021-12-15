@@ -69,7 +69,11 @@ class Downloader:
             async with session.get(self.link) as resp:  # type: ignore
                 if resp.ok:
                     return await resp.text()
-                raise ValueError(f"{self.link!r}: {resp.status!r}")
+                raise ValueError(
+                    f"Cannot find: {self.link!r}: {resp.status!r}\n"
+                    f"Please Specify the subscene link of this movie "
+                    f"explicitly with help of -s/--subscene option."
+                )
 
     async def get_subtitles_links(self) -> list[str]:
         """
@@ -155,8 +159,7 @@ class Downloader:
         Main async entry point. It will make a directory with movie title (hidden) and cd to it.
         download the files and return list of their filenames and directory path.
         """
-        directory = self.movie.dir
-        directory /= f".{self.movie.filename_hash}"
+        directory = self.movie.dir / f".{self.movie.filename_hash}"
 
         if directory.is_dir():
             shutil.rmtree(directory)

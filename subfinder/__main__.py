@@ -39,6 +39,8 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 
 import multiprocessing
+import os
+import signal
 from pathlib import Path
 from typing import Optional
 
@@ -50,11 +52,11 @@ from .movie import Movie
 from .pycore import match_all
 from .pyvideo import make_base
 from .subtitles import extract_subtitle_times
-from .tools import clear, make_subs_dir
+from .tools import clear, emergency_cleanup, make_subs_dir
 
 
 def main(
-    file: Path,
+    movie: Movie,
     language: str,
     audio: Optional[Path] = None,
     subscene: Optional[str] = None,
@@ -63,8 +65,6 @@ def main(
     """
     Main entry point. It should not be used within python code. Designed for CLI.
     """
-
-    movie = Movie(file)
 
     cached_audio = movie.dir / f".{movie.filename_hash}_audio_completed.wav"
 
@@ -132,13 +132,20 @@ def run():
             args.subtitles_directory.is_dir()
         ), f"Cannot find {args.subtitles_directory!r}"
 
-    main(
-        file=args.file,
-        language=args.language,
-        audio=args.audio,
-        subscene=args.subscene,
-        subtitles_directory=args.subtitles_directory,
-    )
+    movie = Movie(args.file)
+
+    try:
+        main(
+            movie=movie,
+            language=args.language,
+            audio=args.audio,
+            subscene=args.subscene,
+            subtitles_directory=args.subtitles_directory,
+        )
+    except BaseException as error:
+        print(error)
+        emergency_cleanup(movie)
+        os.kill(os.getpid(), signal.SIGKILL)
 
 
 if __name__ == "__main__":

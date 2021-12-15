@@ -62,7 +62,7 @@ def extract_audio(movie: Movie, cached_audio: Path) -> None:
     16-bit. Mono. 32,000 Hz. Wav.
     """
 
-    destination = movie.dir / ".audio.wav"
+    destination = movie.dir / f".{movie.filename_hash}_audio.wav"
 
     assert shutil.which("ffmpeg") is not None, "Cannot find FFmpeg."
     if rate := suggest_sample_rate(movie):
@@ -84,4 +84,6 @@ def extract_audio(movie: Movie, cached_audio: Path) -> None:
 
         raise FFmpegError(msg)
 
-    destination.rename(cached_audio)
+    # In case of SIGKILL the file doesn't exist!
+    if destination.is_file():
+        destination.rename(cached_audio)

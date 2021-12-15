@@ -12,6 +12,25 @@ import os
 import shutil
 from pathlib import Path
 
+from .movie import Movie
+
+
+def emergency_cleanup(movie: Movie) -> None:
+    """
+    Clean all cached and unused file and directories in case of a sudden failure.
+    """
+    completed_audio = movie.dir / f".{movie.filename_hash}_audio_completed.wav"
+    uncompleted_audio = movie.dir / f".{movie.filename_hash}_audio.wav"
+    hidden_sub_dir = movie.dir / f".{movie.filename_hash}"
+
+    completed_audio.unlink(missing_ok=True)
+    uncompleted_audio.unlink(missing_ok=True)
+
+    try:
+        shutil.rmtree(hidden_sub_dir)
+    except FileNotFoundError:
+        pass
+
 
 def clear(directory: Path, cached_audio: Path, remove: bool) -> None:
     """

@@ -18,6 +18,10 @@ Cython = "^0.29.25"
 tqdm = "^4.62.3"
 
 [tool.poetry.dev-dependencies]
+black = "^21.12b0"
+mypy = "^0.910"
+pylint = "^2.12.2"
+isort = "^5.10.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
