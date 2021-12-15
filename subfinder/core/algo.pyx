@@ -3,12 +3,12 @@
 # cython: wraparound=False
 # cython: cdivision=True
 
+"""
+Mahyar@Mahyar24.com, Thu 19 Aug 2021.
+"""
+
+from cython.view cimport array as cy_array
 from cpython.datetime cimport timedelta
-
-
-cdef struct scene:
-    double begin
-    double end
 
 
 cpdef double match(list base, list other):
@@ -21,37 +21,37 @@ cpdef double match(list base, list other):
         unsigned int other_len = len(other)
         double matched = 0.0
         double base_total = 0.0
-        scene c_base[100_000]
-        scene c_other[100_000]
+        double [:, :] c_base = cy_array(shape=(base_len, 2), itemsize=sizeof(double), format="d")
+        double [:, :] c_other = cy_array(shape=(other_len, 2), itemsize=sizeof(double), format="d")
         unsigned int dialog, speech
         unsigned int i, ii
 
 
     for i in range(base_len):
-        c_base[i].begin = <double> base[i][0]
-        c_base[i].end = <double> base[i][1]
-        base_total += c_base[i].end - c_base[i].begin
+        c_base[i, 0] = <double> base[i][0]
+        c_base[i, 1] = <double> base[i][1]
+        base_total += c_base[i, 1] - c_base[i, 0]
 
     for ii in range(other_len):
-        c_other[ii].begin = <double> other[ii][0].total_seconds()
-        c_other[ii].end = <double> other[ii][1].total_seconds()
+        c_other[ii, 0] = <double> other[ii][0].total_seconds()
+        c_other[ii, 1] = <double> other[ii][1].total_seconds()
 
     for dialog in range(other_len):
         for speech in range(base_len):
-            if c_base[speech].begin > c_other[dialog].end or c_other[dialog].begin > c_base[speech].end:  # Huge SpeedUP.
+            if c_base[speech, 0] > c_other[dialog, 1] or c_other[dialog, 0] > c_base[speech, 1]:  # Huge SpeedUP.
                 continue
 
             if (
-                c_other[dialog].begin <= c_base[speech].begin and c_other[dialog].end >= c_base[speech].end
+                c_other[dialog, 0] <= c_base[speech, 0] and c_other[dialog, 1] >= c_base[speech, 1]
             ):  # base is included in other completely
-                matched += c_base[speech].end - c_base[speech].begin
+                matched += c_base[speech, 1] - c_base[speech, 0]
             elif (
-                c_other[dialog].begin >= c_base[speech].begin and c_base[speech].end >= c_other[dialog].end
+                c_other[dialog, 0] >= c_base[speech, 0] and c_base[speech, 1] >= c_other[dialog, 1]
             ):  # other is included in base completely
-                matched += c_other[dialog].end - c_other[dialog].begin
-            elif c_other[dialog].begin <= c_base[speech].begin <= c_other[dialog].end <= c_base[speech].end:  # partially
-                matched += c_other[dialog].end - c_base[speech].begin
-            elif c_base[speech].begin <= c_other[dialog].begin <= c_base[speech].end <= c_other[dialog].end:  # partially
-                matched += c_base[speech].end - c_other[dialog].begin
+                matched += c_other[dialog, 1] - c_other[dialog, 0]
+            elif c_other[dialog, 0] <= c_base[speech, 0] <= c_other[dialog, 1] <= c_base[speech, 1]:  # partially
+                matched += c_other[dialog, 1] - c_base[speech, 0]
+            elif c_base[speech, 0] <= c_other[dialog, 0] <= c_base[speech, 1] <= c_other[dialog, 1]:  # partially
+                matched += c_base[speech, 1] - c_other[dialog, 0]
 
     return matched / base_total

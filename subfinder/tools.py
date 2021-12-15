@@ -6,58 +6,74 @@ Compatible with python3.9+.
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 
+import json
 import math
 import os
 import shutil
-from typing import Optional
+from pathlib import Path
 
 
-def check_for_audio() -> bool:
-    """
-    See if completed audio is present.
-    """
-    return ".audio_completed.wav" in os.listdir()
-
-
-def clear(directory: Optional[str], audio: str) -> None:
+def clear(directory: Path, cached_audio: Path, remove: bool) -> None:
     """
     Remove the directory and audio file.
     """
-    if directory is not None:  #
+    if remove:
         shutil.rmtree(
             directory
         )  # The directory should be empty but some cautious is not bad!
 
-    if audio:
-        os.remove(audio)
+    cached_audio.unlink(missing_ok=True)
 
 
 def find_zero_pad_number(length_of_subtitles: int) -> int:
     """
-    Finding needed length of zeros. 123 files -> 1: 001; so it need two leading zero.
+    Finding needed length of zeros. 123 files -> 1: 001; so it needs two leading zero.
     """
     return int(math.log10(length_of_subtitles)) + 1
 
 
-def rename_subs(results: dict[str, float], directory: str, move: bool) -> None:
+def make_subs_dir(
+    directory: Path, results: dict[str, float], move: bool = True
+) -> None:
     """
     Make the Subs directory and rename subtitles based on coverage.
     """
+    base_dir = directory.parent.absolute()
+    subs = base_dir / "Subs"
+
     try:
-        os.mkdir("Subs")
+        os.mkdir(subs)
     except FileExistsError:
         pass
+
     zero_pad_num = find_zero_pad_number(len(results))
 
+    info: dict[str, dict[str, str]] = {
+        "Subs": {},
+        "FindSub": {
+            "GitHub": "https://github.com/mahyar24/findsub",
+            "PyPI": "https://pypi.org/project/findsub/",
+            "E-Mail": "Mahyar@Mahyar24.com",
+        },
+    }
+
     for i, sub in enumerate(results.keys()):
-        new_name = "Subs/" + f"{i + 1}".zfill(zero_pad_num) + ".srt"
+
+        old_file = directory / sub
+        new_name = f"{i + 1}".zfill(zero_pad_num) + ".srt"
+        new_file = subs / new_name
+
         if move:
-            os.rename(os.path.join(directory, sub), new_name)
+            old_file.rename(new_file)
         else:
             try:
-                shutil.copy(os.path.join(directory, sub), new_name)
+                shutil.copy(old_file, new_file)
             except shutil.SameFileError:
-                new_name = new_name.removesuffix(".srt") + "_SUBFINDER.srt"
-                shutil.copy(os.path.join(directory, sub), new_name)
-        if results[sub] >= 0.0:
+                pass
+
+        if results[sub] >= 0.0:  # If synchronous ratio became negative!
             print(f"{new_name}: {results[sub]:.2%}")
+            info["Subs"][new_name] = f"{results[sub]:.2%}"
+
+    with open(subs / "FindSub.json", "w", encoding="utf-8") as info_file:
+        json.dump(info, info_file, indent=4)

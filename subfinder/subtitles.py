@@ -8,14 +8,14 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 
 import datetime
-import os
 from concurrent.futures import ALL_COMPLETED, ProcessPoolExecutor, wait
+from pathlib import Path
 
 import srt  # type: ignore
 
 
 def extract_subtitle_time(
-    file_name: str,
+    file_name: Path,
 ) -> list[tuple[datetime.timedelta, datetime.timedelta]]:
     """
     Making a data structure for times when there is a dialog.
@@ -28,27 +28,26 @@ def extract_subtitle_time(
         sub = srt.parse(data)
         times = [(item.start, item.end) for item in sub]
     except (UnicodeDecodeError, srt.SRTParseError):
-        # print(f"Cannot decode {os.path.relpath(file_name)!r}")
         return []
     else:
         return times
 
 
 def extract_subtitle_times(
-    directory: str,
+    directory: Path,
 ) -> dict[str, list[tuple[datetime.timedelta, datetime.timedelta]]]:
     """
     Making data structure for all subtitles concurrently.
     Check extract_subtitle_time function's docstring.
     """
-    subtitles = os.listdir(directory)
+    subtitles = list(directory.iterdir())
     tasks = {}
     with ProcessPoolExecutor() as executor:
         for subtitle in subtitles:
-            if subtitle.endswith(".srt"):
-                tasks[subtitle] = executor.submit(
+            if subtitle.name.endswith(".srt"):
+                tasks[subtitle.name] = executor.submit(
                     extract_subtitle_time,
-                    os.path.abspath(os.path.join(directory, subtitle)),
+                    subtitle.absolute(),
                 )
         wait(tasks.values(), return_when=ALL_COMPLETED)
 

@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "findsub"
+version = "0.0.1"
+description = "Finding and ranking subtitles from subscene by how much they are sync"
+authors = ["Mahyar Mahdavi <Mahyar@Mahyar24.com>"]
+license = "GPLv3"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+aiofiles = "^0.8.0"
+aiohttp = {extras = ["speedups"], version = "^3.8.1"}
+lxml = "^4.7.1"
+beautifulsoup4 = "^4.10.0"
+srt = "^3.5.0"
+webrtcvad = "^2.0.10"
+IMDbPY = "^2021.4.18"
+Cython = "^0.29.25"
+tqdm = "^4.62.3"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

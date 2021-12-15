@@ -9,58 +9,60 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 
 import hashlib
-import os
+import shutil
 import subprocess
 import zipfile
 from concurrent.futures import ALL_COMPLETED, ProcessPoolExecutor, wait
+from pathlib import Path
 from typing import Optional
 
 
-def hash_subtitles(directory: str) -> None:
+def hash_subtitles(directory: Path) -> None:
     """
     Hash the subtitles content by using md5 and then renaming it to the hexdigest of hash.
     """
-    for file in os.listdir(directory):
-        if file.endswith(".srt"):
-            file_name = os.path.join(directory, file)
-            with open(file_name, "rb") as subtitle:
+    for item in directory.iterdir():
+        if item.is_file() and item.name.endswith(".srt"):
+            with open(item, "rb") as subtitle:
                 data = subtitle.read()
             hash_name = hashlib.md5(data).hexdigest() + ".srt"
-            os.rename(file_name, os.path.join(directory, hash_name))
+            item.rename(directory / hash_name)
 
 
-def delete_bad_files(directory: str) -> None:
+def delete_bad_files(directory: Path) -> None:
     """
     Delete any non-srt files.
     """
-    for file in os.listdir(directory):
-        if not file.endswith(".srt"):
-            os.remove(os.path.join(directory, file))
+    for item in directory.iterdir():
+        if item.is_file() and not item.name.endswith(".srt"):
+            item.unlink(missing_ok=True)
 
 
-def unzip_remove(zip_file: str) -> Optional[str]:
+def unzip_remove(zip_file: Path) -> Optional[Path]:
     """
     Unzip, extract all and removing zip file. If extraction fails, remove
     the zip file and return None, else, delete non-srt files and change
     the name of subtitles to their md5 hash hexdigest.
     """
-    directory = os.path.abspath(os.path.basename(zip_file).split(".")[0])
+    directory = zip_file.parent / zip_file.name.split(".")[0]
     try:
         with zipfile.ZipFile(zip_file, "r") as file:
-            file.extractall(
-                directory
-            )  # Must extract every zip file to one directory otherwise maybe some
+            # Must extract every zip file to one directory otherwise maybe some
             # subtitle with duplicate name and different content gets remove.
+            file.extractall(directory)
     except zipfile.BadZipfile:
-        os.remove(zip_file)
+        zip_file.unlink()
         return None
-    os.remove(zip_file)
-    delete_bad_files(directory)
-    hash_subtitles(directory)
-    return directory
+    else:
+
+        zip_file.unlink()
+        delete_bad_files(directory)
+        hash_subtitles(directory)
+
+        return directory
 
 
-def unzip_all_and_hash(zip_files: list[str]) -> list[str]:
+def unzip_all_and_hash(zip_files: list[Path]) -> list[Path]:
     """
     Unzip and calculate hash for renaming concurrently.
     Returning list of successfully processed subtitles.
@@ -69,43 +71,45 @@ def unzip_all_and_hash(zip_files: list[str]) -> list[str]:
         tasks = [
             executor.submit(unzip_remove, zip_file)
             for zip_file in zip_files
-            if zip_file.endswith(".zip")
+            if zip_file.name.endswith(".zip")
         ]
         wait(tasks, return_when=ALL_COMPLETED)
     return [result for task in tasks if (result := task.result()) is not None]
 
 
-def iconv_subtitles(directory: str) -> None:
+def iconv_subtitles(directory: Path) -> None:
     """
     Converting non UTF-8 srt files to UTF-8. Based on `Convert.sh`.
     Because we are in subtitle directory, we must run shell script
     with leading two dots. (../Sample.sh)
     """
+    script_path = Path(__file__).parent / "scripts/Convert.sh"
     subprocess.call(
-        f"/home/mahyar/Works/PycharmProjects/SubFinder/subfinder/Convert.sh {directory!r}",
+        f'{script_path} "{directory}"',
         shell=True,
         stdout=subprocess.DEVNULL,
     )
 
 
-def move_up(directories: list[str], main_directory: str) -> None:
+def move_up(directories: list[Path]) -> None:
     """
     Moving up subtitles and delete the empty directory.
     """
     for directory in directories:
-        for file in os.listdir(directory):
-            os.rename(
-                os.path.join(directory, file), os.path.join(main_directory, file)
-            )  # It will removes additional duplicates too.
-        os.rmdir(directory)
+        for item in directory.iterdir():
+            if item.is_file():
+                item.rename(item.absolute().parents[1] / item.name)
+            else:
+                shutil.rmtree(item)
+        directory.rmdir()
 
 
-def prepare_files(directory: str) -> None:
+def prepare_files(directory: Path) -> None:
     """
     We will use only this function externally.
     Check other functions docstring.
     """
-    files = [os.path.abspath(os.path.join(directory, f)) for f in os.listdir(directory)]
+    files = list(directory.iterdir())
     dirs = unzip_all_and_hash(files)
-    move_up(dirs, directory)
+    move_up(dirs)
     iconv_subtitles(directory)

@@ -1,7 +1,7 @@
 #! /usr/bin/python3.9
 
 """
-This module's goal is to parsing the cli options and arguments.
+This module's goal is parsing the cli options and arguments.
 Compatible with python3.9+.
 Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
@@ -9,18 +9,20 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 import argparse
 import json
 import os
+import pathlib
+import pkgutil
 import textwrap
 
 
 def find_language(code: str) -> str:
     """
     Reading langs.json and trying to find desired language
-    by checking two letter codes base on ISO 639-1.
+    by checking two-letter codes base on ISO 639-1.
     """
-    with open(
-        "/home/mahyar/Works/PycharmProjects/SubFinder/langs.json", encoding="utf-8"
-    ) as langs_file:
-        langs = json.load(langs_file)
+    if (langs_file := pkgutil.get_data(__name__, "data/langs.json")) is None:
+        raise FileNotFoundError("langs.json does not exist")
+
+    langs = json.loads(langs_file.decode("utf-8"))
 
     for key, value in langs.items():
         if code.lower() == key:
@@ -49,14 +51,14 @@ def parsing_args() -> argparse.Namespace:
     )  # Link or directory, not both!
 
     parser.add_argument(
-        "file",
-        help="Select desired movie.",
+        "file", help="Select desired movie.", type=lambda x: pathlib.Path(x).absolute()
     )
 
     parser.add_argument(
         "-l",
         "--language",
-        default="fa",
+        default=os.environ.get("FINDSUB_LANG", "en"),
+        type=find_language,
         help="Two letter code for desired subtitle's language. (ISO 639-1)",
     )
 
@@ -67,22 +69,15 @@ def parsing_args() -> argparse.Namespace:
     group_link_dir.add_argument(
         "-d",
         "--subtitles-directory",
-        type=os.path.abspath,  # type: ignore # Make it absolute path.
+        type=lambda x: pathlib.Path(x).absolute(),
         help="Check matching of subtitles in directory with movie.",
     )
 
     parser.add_argument(
         "-a",
         "--audio",
+        type=lambda x: pathlib.Path(x).absolute(),
         help="If extracted audio is available, use the path to speed up program.",
-    )
-
-    parser.add_argument(
-        "-g",
-        "--gpu-acceleration",
-        help="Using GPU acceleration for extracting audio. "
-        "(Nvidia supported only, CUDA must be installed too.)",
-        action="store_true",
     )
 
     return parser.parse_args()
