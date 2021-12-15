@@ -8,7 +8,7 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 from distutils.command.build_ext import build_ext
 from distutils.core import Extension
 
-from Cython.Build import cythonize  # type: ignore
+from Cython.Build import cythonize
 
 ext_modules = cythonize(
     [
@@ -36,7 +36,7 @@ class ExtBuilder(build_ext):
         try:
             super().build_extension(ext)
         except (CCompilerError, DistutilsExecError, DistutilsPlatformError, ValueError):
-            raise BuildFailed("Could not compile C extension.")
+            raise BuildFailed("Could not compile Cython extensions.")
 
 
 def build(setup_kwargs):
