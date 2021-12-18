@@ -5,15 +5,14 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 
 
-from distutils.command.build_ext import build_ext
-from distutils.core import Extension
-
 from Cython.Build import cythonize
+from setuptools import Extension
+from setuptools.command.build_ext import build_ext
 
 ext_modules = cythonize(
     [
         Extension(
-            name="algo",
+            name="findsub.core.algo",
             include_dirs=["findsub/core"],
             sources=["findsub/core/algo.pyx"],
         ),
