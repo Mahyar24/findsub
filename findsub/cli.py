@@ -18,6 +18,7 @@ def find_language(code: str) -> str:
     """
     Reading langs.json and trying to find desired language
     by checking two-letter codes base on ISO 639-1.
+    Additionally, "bz" -> "brazillian-portuguese".
     """
     if (langs_file := pkgutil.get_data(__name__, "data/langs.json")) is None:
         raise FileNotFoundError("langs.json does not exist")
@@ -60,7 +61,8 @@ def parsing_args() -> argparse.Namespace:
         "--language",
         default=os.environ.get("FINDSUB_LANG", "en"),
         type=find_language,
-        help="Two letter code for desired subtitle's language. (ISO 639-1)",
+        help="Two letter code for desired subtitle's language. (ISO 639-1) [Additionally: 'bz' -> "
+        "'brazillian-portuguese']",
     )
 
     group_link_dir.add_argument(
@@ -71,14 +73,21 @@ def parsing_args() -> argparse.Namespace:
         "-d",
         "--subtitles-directory",
         type=lambda x: pathlib.Path(x).absolute(),
-        help="Check matching of subtitles in directory with movie.",
+        help="Check against already present subtitles in a directory.",
+    )
+
+    parser.add_argument(
+        "-b",
+        "--synced-subtitle",
+        type=lambda x: pathlib.Path(x).absolute(),
+        help="If you already have a synced subtitle, use it as base. (alot faster)",
     )
 
     parser.add_argument(
         "-a",
         "--audio",
         type=lambda x: pathlib.Path(x).absolute(),
-        help="If extracted audio is available, use the path to speed up program.",
+        help="If extracted audio is available, use the path to it to speed up the program.",
     )
 
     return parser.parse_args()

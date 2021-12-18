@@ -32,7 +32,7 @@ Usage:
     findsub <file> -a/--audio extracted_audio.wav -> same as last one but
         using already extracted audio. (faster!)
     findsub -l/--language en/english <file> -> getting english subtitles.
-        default is "Farsi/Persian".
+        default is set by "FINDSUB_LANG" environment variable otherwise "English".
     findsub -s/--subscene <subscene-link> <file> -> no link suggestion. (faster!)
     findsub -d/--subtitles-directory <path-of-downloaded-subtitles> <file> ->
         using already download subtitles.
@@ -53,7 +53,7 @@ from .ffmpeg import extract_audio
 from .movie import Movie
 from .pycore import match_all
 from .pyvideo import make_base
-from .subtitles import extract_subtitle_times
+from .subtitles import extract_subtitle_time, extract_subtitle_times
 from .tools import clear, emergency_cleanup, make_subs_dir
 
 
@@ -63,6 +63,7 @@ def main(
     audio: Optional[Path] = None,
     subscene: Optional[str] = None,
     subtitles_directory: Optional[Path] = None,
+    synced_subtitle: Optional[Path] = None,
 ) -> None:
     """
     Main entry point. It should not be used within python code. Designed for CLI.
@@ -70,16 +71,17 @@ def main(
 
     cached_audio = movie.dir / f".{movie.filename_hash}_audio_completed.wav"
 
-    if audio is None:  # Check for extracted audio file.
-        if cached_audio.is_file():
-            audio = cached_audio
+    if synced_subtitle is None:
+        if audio is None:  # Check for extracted audio file.
+            if cached_audio.is_file():
+                audio = cached_audio
 
-    if audio is None:
-        process = multiprocessing.Process(
-            target=extract_audio, args=(movie, cached_audio), daemon=True
-        )
-        process.start()
-        print("Audio extraction begins.")
+        if audio is None:
+            process = multiprocessing.Process(
+                target=extract_audio, args=(movie, cached_audio), daemon=True
+            )
+            process.start()
+            print("Audio extraction begins.")
 
     # If user already has a directory of subtitles, we must not move them to the Subs.
     move = True
@@ -101,16 +103,30 @@ def main(
     else:
         print("Done.")
 
-    if audio is None:
-        print("Waiting for audio extraction to finish.", end=" ", flush=True)
-        # noinspection PyUnboundLocalVariable
-        process.join()
-        audio = cached_audio
-        print("Done.")
+    if synced_subtitle is None:
+        if audio is None:
+            print("Waiting for audio extraction to finish.", end=" ", flush=True)
+            # noinspection PyUnboundLocalVariable
+            process.join()
+            audio = cached_audio
+            print("Done.")
 
-    print("Voice Activity Detector started the analysis.", end=" ", flush=True)
-    movie_time_structure = make_base(audio)
-    print("Done.")
+        print("Voice Activity Detector started the analysis.", end=" ", flush=True)
+        movie_time_structure = make_base(audio)
+        print("Done.")
+    else:
+        temp_movie_time_structure = extract_subtitle_time(synced_subtitle)
+        if not temp_movie_time_structure:  # if it's not empty.
+            movie_time_structure = [
+                (
+                    int(i[0].total_seconds()),
+                    int(i[1].total_seconds()),
+                )
+                for i in temp_movie_time_structure
+            ]
+            clear(subtitles_directory, cached_audio, remove=move)
+        else:
+            raise UnicodeError(f"Cannot read '{synced_subtitle}.'")
 
     results = match_all(movie_time_structure, sub_time_structures)
 
@@ -143,6 +159,7 @@ def run():
             audio=args.audio,
             subscene=args.subscene,
             subtitles_directory=args.subtitles_directory,
+            synced_subtitle=args.synced_subtitle,
         )
     except BaseException as error:
         print(error)

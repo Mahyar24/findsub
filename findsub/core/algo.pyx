@@ -37,8 +37,8 @@ cpdef double match(list base, list other):
         c_other[ii, 0] = <double> other[ii][0].total_seconds()
         c_other[ii, 1] = <double> other[ii][1].total_seconds()
 
-    for dialog in range(other_len):
-        for speech in range(base_len):
+    for speech in range(base_len):
+        for dialog in range(other_len):
             if c_base[speech, 0] > c_other[dialog, 1] or c_other[dialog, 0] > c_base[speech, 1]:  # Huge SpeedUP.
                 continue
 

@@ -2418,7 +2418,7 @@ static double __pyx_f_4algo_match(PyObject *__pyx_v_base, PyObject *__pyx_v_othe
  *         c_other[ii, 0] = <double> other[ii][0].total_seconds()
  *         c_other[ii, 1] = <double> other[ii][1].total_seconds()             # <<<<<<<<<<<<<<
  * 
- *     for dialog in range(other_len):
+ *     for speech in range(base_len):
  */
     if (unlikely(__pyx_v_other == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
@@ -2454,30 +2454,30 @@ static double __pyx_f_4algo_match(PyObject *__pyx_v_base, PyObject *__pyx_v_othe
   /* "algo.pyx":40
  *         c_other[ii, 1] = <double> other[ii][1].total_seconds()
  * 
- *     for dialog in range(other_len):             # <<<<<<<<<<<<<<
- *         for speech in range(base_len):
+ *     for speech in range(base_len):             # <<<<<<<<<<<<<<
+ *         for dialog in range(other_len):
  *             if c_base[speech, 0] > c_other[dialog, 1] or c_other[dialog, 0] > c_base[speech, 1]:  # Huge SpeedUP.
  */
-  __pyx_t_6 = __pyx_v_other_len;
+  __pyx_t_6 = __pyx_v_base_len;
   __pyx_t_7 = __pyx_t_6;
   for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
-    __pyx_v_dialog = __pyx_t_8;
+    __pyx_v_speech = __pyx_t_8;
 
     /* "algo.pyx":41
  * 
- *     for dialog in range(other_len):
- *         for speech in range(base_len):             # <<<<<<<<<<<<<<
+ *     for speech in range(base_len):
+ *         for dialog in range(other_len):             # <<<<<<<<<<<<<<
  *             if c_base[speech, 0] > c_other[dialog, 1] or c_other[dialog, 0] > c_base[speech, 1]:  # Huge SpeedUP.
  *                 continue
  */
-    __pyx_t_14 = __pyx_v_base_len;
+    __pyx_t_14 = __pyx_v_other_len;
     __pyx_t_15 = __pyx_t_14;
     for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
-      __pyx_v_speech = __pyx_t_16;
+      __pyx_v_dialog = __pyx_t_16;
 
       /* "algo.pyx":42
- *     for dialog in range(other_len):
- *         for speech in range(base_len):
+ *     for speech in range(base_len):
+ *         for dialog in range(other_len):
  *             if c_base[speech, 0] > c_other[dialog, 1] or c_other[dialog, 0] > c_base[speech, 1]:  # Huge SpeedUP.             # <<<<<<<<<<<<<<
  *                 continue
  * 
@@ -2502,7 +2502,7 @@ static double __pyx_f_4algo_match(PyObject *__pyx_v_base, PyObject *__pyx_v_othe
       if (__pyx_t_17) {
 
         /* "algo.pyx":43
- *         for speech in range(base_len):
+ *         for dialog in range(other_len):
  *             if c_base[speech, 0] > c_other[dialog, 1] or c_other[dialog, 0] > c_base[speech, 1]:  # Huge SpeedUP.
  *                 continue             # <<<<<<<<<<<<<<
  * 
@@ -2511,8 +2511,8 @@ static double __pyx_f_4algo_match(PyObject *__pyx_v_base, PyObject *__pyx_v_othe
         goto __pyx_L9_continue;
 
         /* "algo.pyx":42
- *     for dialog in range(other_len):
- *         for speech in range(base_len):
+ *     for speech in range(base_len):
+ *         for dialog in range(other_len):
  *             if c_base[speech, 0] > c_other[dialog, 1] or c_other[dialog, 0] > c_base[speech, 1]:  # Huge SpeedUP.             # <<<<<<<<<<<<<<
  *                 continue
  * 

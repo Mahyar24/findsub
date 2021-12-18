@@ -132,6 +132,9 @@
     "name": "Bosnian",
     "nativeName": "bosanski jezik"
   },
+    "bz": {
+    "name": "brazillian-portuguese",
+  },
   "ca": {
     "639-1": "ca",
     "639-2": "cat",
