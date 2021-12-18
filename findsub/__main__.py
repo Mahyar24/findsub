@@ -116,7 +116,7 @@ def main(
         print("Done.")
     else:
         temp_movie_time_structure = extract_subtitle_time(synced_subtitle)
-        if not temp_movie_time_structure:  # if it's not empty.
+        if temp_movie_time_structure:  # if it's not empty.
             movie_time_structure = [
                 (
                     int(i[0].total_seconds()),
@@ -126,7 +126,7 @@ def main(
             ]
             clear(subtitles_directory, cached_audio, remove=move)
         else:
-            raise UnicodeError(f"Cannot read '{synced_subtitle}.'")
+            raise UnicodeError(f"Cannot read '{synced_subtitle}'.")
 
     results = match_all(movie_time_structure, sub_time_structures)
 
