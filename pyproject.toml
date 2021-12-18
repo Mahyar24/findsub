@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "findsub"
-version = "0.0.6"
+version = "0.7.1"
 description = "Finding and ranking subtitles from subscene by how much they are synced."
 authors = ["Mahyar Mahdavi <Mahyar@Mahyar24.com>"]
 license = "GPLv3"

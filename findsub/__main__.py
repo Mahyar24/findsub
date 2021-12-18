@@ -124,8 +124,8 @@ def main(
                 )
                 for i in temp_movie_time_structure
             ]
-            clear(subtitles_directory, cached_audio, remove=move)
         else:
+            clear(subtitles_directory, cached_audio, remove=move)
             raise UnicodeError(f"Cannot read '{synced_subtitle}'.")
 
     results = match_all(movie_time_structure, sub_time_structures)
