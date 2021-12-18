@@ -73,6 +73,10 @@ subfinder The_Sea_Inside_2004_720p_BrRip_YIFY.mkv -s https://subscene.com/subtit
 → Sometimes FindSub cannot find the subscene page for a movie, in that case, you should manually pass the link to it.
 - check `findsub --help` for more info.
 
+## Dependencies
+**FFmpeg, FFprobe, Bash, and Iconv** are needed in most cases.
+
+
 ## Issues
 Findsub currently doesn't support downloading subtitles for series episodes. 
 Also, it may not work very well with windows, but it should be usable.

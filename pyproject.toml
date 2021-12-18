@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "findsub"
-version = "0.0.2"
+version = "0.0.3"
 description = "Finding and ranking subtitles from subscene by how much they are synced."
 authors = ["Mahyar Mahdavi <Mahyar@Mahyar24.com>"]
 license = "GPLv3"
@@ -19,9 +19,9 @@ srt = "^3.5.0"
 webrtcvad = "^2.0.10"
 IMDbPY = "^2021.4.18"
 tqdm = "^4.62.3"
-Cython = "^0.29.25"
 setuptools = "^59.6.0"
 wheel = "^0.37.0"
+Cython = "0.29.25"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"
@@ -33,5 +33,5 @@ isort = "^5.10.1"
 findsub = "findsub.__main__:run"
 
 [build-system]
-requires = ["poetry-core>=1.0.0", "Cython", "wheel", "setuptools"]
+requires = ["poetry-core>=1.0.0", "Cython==0.29.25", "wheel", "setuptools"]
 build-backend = "poetry.core.masonry.api"
