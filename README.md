@@ -6,12 +6,18 @@ from [subscene](https://subscene.com/).
 
 
 ## Installation
-
-Recommended way is by using [pipx](https://github.com/pypa/pipx).
-First, install pipx:
+Let's assume you are using python3.9 (python3.9+ is supported)
+To install finsub, first, you must install these prerequisites:
 
 ```bash
-sudo apt install pipx
+sudo apt install gcc python3.9-dev
+```
+‍‍‍‍‍‍
+After that, the recommended way is by using [pipx](https://github.com/pypa/pipx).
+to install pipx:
+
+```bash
+sudo apt install python3.9-venv pipx
 ```
 
 Then install FindSub by using the command below:
@@ -20,8 +26,13 @@ Then install FindSub by using the command below:
 pipx install --python python3.9 findsub
 ```
 
-P.S.: FindSub is supported by python3.9+. Also, GCC is required for compiling C extensions.
-FFmpeg and FFprobe are also needed for extracting of movie's audio.
+FFmpeg and FFprobe are also needed for extracting of movie's audio that is in use for most cases.
+
+```bash
+sudo apt install ffmpeg
+```
+
+P.S: **Bash and Iconv** are required too.
 
 # Basic Usage and explanation. (Must read!)
 
@@ -72,9 +83,6 @@ subfinder The_Sea_Inside_2004_720p_BrRip_YIFY.mkv -s https://subscene.com/subtit
 ```
 → Sometimes FindSub cannot find the subscene page for a movie, in that case, you should manually pass the link to it.
 - check `findsub --help` for more info.
-
-## Dependencies
-**FFmpeg, FFprobe, Bash, and Iconv** are needed in most cases.
 
 
 ## Issues
