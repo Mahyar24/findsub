@@ -5,6 +5,9 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 """
 
 
+from distutils.errors import (CCompilerError, DistutilsExecError,
+                              DistutilsPlatformError)
+
 from Cython.Build import cythonize
 from setuptools import Extension
 from setuptools.command.build_ext import build_ext

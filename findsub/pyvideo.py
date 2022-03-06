@@ -26,14 +26,11 @@ def generate_chunk(file: Path, frame_duration_ms: int, sample_rate: int) -> list
     vad = webrtcvad.Vad()
     vad.set_mode(0)
 
-    base_ms = []
     num_frames = int(sample_rate * (frame_duration_ms / 1000.0))
     with contextlib.closing(wave.open(str(file), "rb")) as wav_file:
         with contextlib.suppress(Exception):
             while chunk := wav_file.readframes(num_frames):
-                base_ms.append(vad.is_speech(chunk, sample_rate))
-
-    return base_ms
+                yield vad.is_speech(chunk, sample_rate)
 
 
 def assert_wave(file: Path) -> int:
@@ -69,17 +66,12 @@ def make_base(
     """
     rate = assert_wave(file)
 
-    unit = 1_000 // millisecond
+    ms = millisecond / 1_000
 
+    result = []
     base_ms = generate_chunk(file, millisecond, rate)
-    base_s = [base_ms[i : i + unit] for i in range(0, len(base_ms), unit)]
-    base = []
-    for i, second in enumerate(base_s):
-        if sum(second) / len(second) > threshold:
-            base.append(
-                (
-                    i,
-                    i + 1,
-                )
-            )
-    return base
+    for i, status in enumerate(base_ms):
+        if status:
+            result.append((i * ms, (i + 1) * ms))
+
+    return result

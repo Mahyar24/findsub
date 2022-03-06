@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /usr/bin/env bash
 
 # Converting srt files to UTF-8.
 # Mahyar@Mahyar24.com, Thu 19 Aug 2021.
