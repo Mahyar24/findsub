@@ -1,3 +1,7 @@
+# !!! WARNING !!!
+It seems like Subscene is now working behind Cloudflare CDN and because of this matter, findsub can **NOT** access subscene and it does **NOT** work for now!
+
+
 # FindSub
 
 FindSub is an Application for automatically downloading and ranking subtitles based on how much they are synced
