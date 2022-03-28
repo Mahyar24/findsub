@@ -61,16 +61,16 @@ class Downloader:
 
             print(f"IMDB Search: {name!r} ({year}). Subscene link: {self.link!r}")
 
-    async def get_content(self) -> str:
+    def get_content(self) -> str:
         """
         Get HTML of a link. It will raise a ValueError if respond wasn't ok.
         """
-        with cloudscraper.Session() as session:
+        with cloudscraper.create_scraper() as session:
             with session.get(self.link) as resp:  # type: ignore
                 if resp.ok:
                     return resp.text
                 raise ValueError(
-                    f"Cannot find: {self.link!r}: {resp.status!r}\n"
+                    f"Cannot find: {self.link!r}: {resp.status_code!r}\n"
                     f"Please Specify the subscene link of this movie "
                     f"explicitly with help of -s/--subscene option."
                 )
@@ -127,7 +127,7 @@ class Downloader:
         Extract download links of subtitles and download them.
         """
         num = 0
-        with cloudscraper.Session() as session:
+        with cloudscraper.create_scraper() as session:
             extracting_download_links = [
                 self.extract_dl_link(link, session) for link in links
             ]
