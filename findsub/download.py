@@ -104,56 +104,54 @@ class Downloader:
                 return self.SUBSCENE_URL + download_button["href"]
         return None
 
-    @staticmethod
     def download_one(
+        self,
         link: str,
         name: str,
         directory: Path,
-        session: cloudscraper.Session,
     ) -> Optional[str]:
         """
-        Download the subtitle, if response was not okay, return None.
+        Extract the link adn Download the subtitle, if response was not okay, return None.
         """
-        with session.get(link) as resp:
-            if resp.ok:
-                with open(directory / name, "wb") as file:
-                    for chunk in resp.iter_content(chunk_size=1024):
-                        file.write(chunk)
-                return name
+        with cloudscraper.create_scraper() as session:
+            dl_link = self.extract_dl_link(link, session)
+
+            if dl_link is not None:
+                with session.get(link) as resp:
+                    if resp.ok:
+                        with open(directory / name, "wb") as file:
+                            for chunk in resp.iter_content(chunk_size=1024):
+                                file.write(chunk)
+                        return name
         return None
 
     def download_all(self, links: list[str], directory: Path) -> list[str]:
         """
-        Extract download links of subtitles and download them.
+        Extract download links of subtitles and download them concurrently.
         """
         num = 0
-        with cloudscraper.create_scraper() as session:
-            extracting_download_links = [
-                self.extract_dl_link(link, session) for link in links
-            ]
-            with ThreadPoolExecutor() as executor:
-                downloads = {}
-                for download_link in extracting_download_links:
-                    num += 1
-                    name = f"{num}.zip"
-                    task = executor.submit(
-                        self.download_one,
-                        download_link,
-                        name,
-                        directory,
-                        session,
-                    )
-                    downloads[task] = name
+        with ThreadPoolExecutor() as executor:
+            downloads = {}
+            for link in links:
+                num += 1
+                name = f"{num}.zip"
+                task = executor.submit(
+                    self.download_one,
+                    link,
+                    name,
+                    directory,
+                )
+                downloads[task] = name
 
-                results = []
-                for future in tqdm(
-                    as_completed(downloads),
-                    desc="Downloading Subtitles",
-                    total=len(links),
-                    bar_format="{desc}: {bar} {n_fmt}/{total_fmt} {percentage:3.0f}%",
-                ):
-                    if (res := future.result()) is not None:
-                        results.append(res)
+            results = []
+            for future in tqdm(
+                as_completed(downloads),
+                desc="Downloading Subtitles",
+                total=len(links),
+                bar_format="{desc}: {bar} {n_fmt}/{total_fmt} {percentage:3.0f}%",
+            ):
+                if (res := future.result()) is not None:
+                    results.append(res)
 
         return results
 
