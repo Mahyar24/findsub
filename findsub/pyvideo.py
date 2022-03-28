@@ -13,13 +13,16 @@ Mahyar@Mahyar24.com, Thu 19 Aug 2021.
 import contextlib
 import wave
 from pathlib import Path
+from typing import Iterable
 
 import webrtcvad  # type: ignore
 
 from .ffmpeg import RATES
 
 
-def generate_chunk(file: Path, frame_duration_ms: int, sample_rate: int) -> list[bool]:
+def generate_chunk(
+    file: Path, frame_duration_ms: int, sample_rate: int
+) -> Iterable[bool]:
     """
     Slicing was to chunk of data based on frame duration.
     """
@@ -66,12 +69,18 @@ def make_base(
     """
     rate = assert_wave(file)
 
-    ms = millisecond / 1_000
+    unit = 1_000 // millisecond
 
-    result = []
-    base_ms = generate_chunk(file, millisecond, rate)
-    for i, status in enumerate(base_ms):
-        if status:
-            result.append((i * ms, (i + 1) * ms))
+    base_ms = list(generate_chunk(file, millisecond, rate))
+    base_s = [base_ms[i : i + unit] for i in range(0, len(base_ms), unit)]
 
-    return result
+    base = []
+    for i, second in enumerate(base_s):
+        if sum(second) / len(second) > threshold:
+            base.append(
+                (
+                    i,
+                    i + 1,
+                )
+            )
+    return base

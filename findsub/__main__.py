@@ -10,8 +10,7 @@ and make a timeline of it. Finally, we check how much of a time when there is
 a possible speech each of the subtitles has a text.
 
 Required PyPI Packages:
-    `aiofiles` library is required. -> https://pypi.org/project/aiofiles/
-    `aiohttp` library is required. -> https://pypi.org/project/aiohttp/
+    `cloudscraper` library is required. -> https://pypi.org/project/cloudscraper/
     `beautifulsoup4` library is required. -> https://pypi.org/project/beautifulsoup4/
     `lxml` library is required. -> https://pypi.org/project/lxml/
     `webrtcvad` library is required. -> https://pypi.org/project/webrtcvad/
