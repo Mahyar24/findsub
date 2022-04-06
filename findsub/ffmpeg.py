@@ -12,9 +12,13 @@ import bisect
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Literal, Union
+from typing import TYPE_CHECKING, Literal, TypeVar, Union
 
-from .movie import Movie
+if TYPE_CHECKING:
+    from .movie import Movie
+else:
+    Movie = TypeVar("Movie")
+
 
 RATES = (8_000, 16_000, 32_000, 48_000)
 
